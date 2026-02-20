@@ -20,9 +20,11 @@ jobs:
           java-version: "17"
           distribution: "temurin"
 
-      # 3. Gradle 환경 설정 & 빌드
+      # 3. Gradle 환경 설정 & 빌드 (캐시 비활성화로 캐시 오류 우회)
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-disabled: true
 
       - name: Build Backend
         run: gradle bootJar -x test
