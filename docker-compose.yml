@@ -18,7 +18,7 @@ services:
   frontend:
     image: ${DOCKER_IMAGE_FRONTEND}
     ports:
-      - "3000:3000"
+      - "80:3000"
     environment:
       # 컨테이너 내부 통신을 위해 backend 서비스명을 주소로 설정
       - BACKEND_URL=http://backend:8080
