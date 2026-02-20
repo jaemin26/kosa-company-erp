@@ -120,7 +120,6 @@ export default function RfqRequestModal({
             rfqNum: rfqNum || undefined,
             prNum: detail.header.prNum,
             pcType: detail.header.pcType,
-            pcTypeNm: detail.header.pcTypeNm,
             rfqSubject: detail.header.rfqSubject,
             rfqType: detail.header.rfqType,
             reqCloseDate: detail.header.reqCloseDate.includes('T')

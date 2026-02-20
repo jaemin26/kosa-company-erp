@@ -62,6 +62,7 @@ export interface RfqDetailResponse {
         ctrlUserNm: string;
         prNum: string;
         pcType: string;
+        pcTypeNm?: string;
     };
     items: {
         lineNo: number;
