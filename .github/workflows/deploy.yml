@@ -20,11 +20,12 @@ jobs:
           java-version: "17"
           distribution: "temurin"
 
-      # 3. 백엔드 빌드 (테스트 제외)
+      # 3. Gradle 환경 설정 & 빌드
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+
       - name: Build Backend
-        run: |
-          chmod +x ./gradlew
-          ./gradlew bootJar -x test
+        run: gradle bootJar -x test
 
       # 4. Docker Hub 로그인
       - name: Login to Docker Hub
