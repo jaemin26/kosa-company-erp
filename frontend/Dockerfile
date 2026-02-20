@@ -10,6 +10,8 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# 런타임이 아닌 빌드타임(Build time)에 환경변수가 있어야 next.config.ts의 rewrites에 올바르게 구워집니다.
+ENV BACKEND_URL=http://backend:8080
 # Standalone 빌드 수행
 RUN npm run build
 
