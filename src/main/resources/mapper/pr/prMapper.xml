@@ -163,7 +163,7 @@
             ON U.USER_ID = HD.REG_USER_ID
             AND U.DEL_FLAG = 'N'
         
-        LEFT JOIN vw_dept_active D
+        LEFT JOIN dept D
             ON D.DEPT_CD = HD.DEPT_CD
         
         WHERE HD.DEL_FLAG = 'N'
@@ -236,7 +236,7 @@
             ON U.USER_ID = HD.REG_USER_ID
             AND U.DEL_FLAG = 'N'
         
-        LEFT JOIN vw_dept_active D
+        LEFT JOIN dept D
             ON D.DEPT_CD = HD.DEPT_CD
         
         WHERE HD.DEL_FLAG = 'N'
