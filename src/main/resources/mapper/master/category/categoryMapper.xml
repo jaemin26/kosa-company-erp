@@ -11,7 +11,7 @@
             ITEM_LVL AS itemLvl,
             PARENT_ITEM_CLS AS parentItemCls
         FROM
-            MTCA
+            mtca
         WHERE
             DEL_FLAG = 'N'
     </select>
@@ -25,7 +25,7 @@
             ITEM_LVL AS itemLvl,
             PARENT_ITEM_CLS AS parentItemCls
         FROM
-            MTCA
+            mtca
         <where>
 
             <if test="parentItemCls == null or parentItemCls == ''">
@@ -46,7 +46,7 @@
             ITEM_LVL AS itemLvl,
             PARENT_ITEM_CLS AS parentItemCls
         FROM
-            MTCA
+            mtca
         WHERE
             ITEM_CLS = #{itemCls}
         AND
@@ -58,7 +58,7 @@
         SELECT
             MAX(ITEM_CLS)
         FROM
-            MTCA
+            mtca
         WHERE
             PARENT_ITEM_CLS = #{parentItemCls}
     </select>
@@ -68,7 +68,7 @@
         SELECT
             COUNT(*)
         FROM
-            MTCA
+            mtca
         WHERE
         <foreach collection="list" item="item" separator="OR">
             (
@@ -88,7 +88,7 @@
     <!--품목 코드 중복 체크-->
     <select id="checkCodeDuplicate" parameterType="java.util.List" resultType="int">
         SELECT COUNT(*)
-        FROM MTCA
+        FROM mtca
         WHERE DEL_FLAG = 'N'
         AND ITEM_CLS IN
         <foreach collection="list" item="item" open="(" close=")" separator=",">
@@ -101,7 +101,7 @@
         SELECT
             COUNT(*)
         FROM
-            MTCA
+            mtca
         WHERE
             PARENT_ITEM_CLS = #{itemCls}
         AND
@@ -112,7 +112,7 @@
     <!--품목 분류 저장-->
     <insert id="insertCategory" parameterType="java.util.List">
         INSERT INTO
-            MTCA(
+            mtca(
                 ITEM_CLS,
                 PARENT_ITEM_CLS,
                 ITEM_LVL,
@@ -151,7 +151,7 @@
     <!--카테고리 삭제 및 수정 -->
     <update id="updateCategory" parameterType="com.company.erp.master.category.dto.CategoryUpdateDto">
         UPDATE
-            MTCA
+            mtca
         <set>
             MOD_DATE = #{modifiedAt},
             MOD_USER_ID = #{modifiedBy},
@@ -178,7 +178,7 @@
 <!--        SELECT-->
 <!--            COUNT(*)-->
 <!--        FROM-->
-<!--            MTCA-->
+<!--            mtca-->
 <!--        WHERE-->
 <!--            ITEM_CLS_NM = #{itemClsNm}-->
 <!--    </select>-->

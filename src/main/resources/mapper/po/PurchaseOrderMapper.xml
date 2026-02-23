@@ -21,17 +21,17 @@
             h.RMK           AS remark, 
             (
                 SELECT COALESCE(SUM(d.GR_QT), 0) 
-                FROM GRDT d 
-                JOIN GRHD g ON d.GR_NUM = g.GR_NUM 
+                FROM grdt d 
+                JOIN grhd g ON d.GR_NUM = g.GR_NUM 
                 WHERE g.PO_NUM = h.PO_NUM 
                   AND g.DEL_FLAG = 'N' 
                   AND g.PROGRESS_CD != 'GRX' 
                   AND d.DEL_FLAG = 'N' 
                   AND d.STATUS_CD = 'N' 
             ) AS receivedQuantity 
-        FROM POHD h 
-        LEFT JOIN VNGL v ON h.VENDOR_CD = v.VENDOR_CD 
-        LEFT JOIN BY_USER u ON h.CTRL_USER_ID = u.USER_ID 
+        FROM pohd h 
+        LEFT JOIN vngl v ON h.VENDOR_CD = v.VENDOR_CD 
+        LEFT JOIN by_user u ON h.CTRL_USER_ID = u.USER_ID 
         WHERE h.DEL_FLAG = 'N' 
         <if test="poNo != null and poNo != ''"> 
             AND h.PO_NUM LIKE CONCAT('%', #{poNo}, '%') 
@@ -74,9 +74,9 @@
             h.CHECK_FLAG    AS checkFlag, 
             h.CHECK_DATE    AS checkDate, 
             h.RMK           AS remark 
-        FROM POHD h 
-        LEFT JOIN VNGL v ON h.VENDOR_CD = v.VENDOR_CD 
-        LEFT JOIN BY_USER u ON h.CTRL_USER_ID = u.USER_ID 
+        FROM pohd h 
+        LEFT JOIN vngl v ON h.VENDOR_CD = v.VENDOR_CD 
+        LEFT JOIN by_user u ON h.CTRL_USER_ID = u.USER_ID 
         WHERE h.PO_NUM = #{poNo} 
           AND h.DEL_FLAG = 'N' 
     </select>
@@ -98,9 +98,9 @@
             h.CHECK_FLAG    AS checkFlag, 
             h.CHECK_DATE    AS checkDate, 
             h.RMK           AS remark 
-        FROM POHD h 
-        LEFT JOIN VNGL v ON h.VENDOR_CD = v.VENDOR_CD 
-        LEFT JOIN BY_USER u ON h.CTRL_USER_ID = u.USER_ID 
+        FROM pohd h 
+        LEFT JOIN vngl v ON h.VENDOR_CD = v.VENDOR_CD 
+        LEFT JOIN by_user u ON h.CTRL_USER_ID = u.USER_ID 
         WHERE h.PO_NUM = #{poNo} 
           AND h.DEL_FLAG = 'N' 
         FOR UPDATE 
@@ -123,9 +123,9 @@
             d.RMK           AS remark,
             h.VENDOR_CD     AS vendorCode, 
             v.VENDOR_NM     AS vendorName 
-        FROM PODT d 
-        INNER JOIN POHD h ON d.PO_NUM = h.PO_NUM 
-        LEFT JOIN VNGL v ON h.VENDOR_CD = v.VENDOR_CD 
+        FROM podt d 
+        INNER JOIN pohd h ON d.PO_NUM = h.PO_NUM 
+        LEFT JOIN vngl v ON h.VENDOR_CD = v.VENDOR_CD 
         WHERE d.PO_NUM = #{poNo}
           AND d.DEL_FLAG = 'N' 
         ORDER BY d.REG_DATE DESC 
@@ -133,7 +133,7 @@
 
     <!-- 헤더 등록 -->
     <insert id="insertHeader"> 
-        INSERT INTO POHD ( 
+        INSERT INTO pohd ( 
             PO_NUM, PO_SUBJECT, PO_DATE, PO_AMT, PROGRESS_CD,
             CTRL_USER_ID, CTRL_DEPT_CD, VENDOR_CD, PR_NUM, RFQ_NUM, PC_TYPE, 
             REG_DATE, REG_USER_ID, DEL_FLAG, RMK 
@@ -146,7 +146,7 @@
 
     <!-- 품목 등록 -->
     <insert id="insertItem"> 
-        INSERT INTO PODT ( 
+        INSERT INTO podt ( 
             PO_NUM, ITEM_CD, ITEM_DESC, ITEM_SPEC, UNIT_CD,
             PO_QT, UNIT_PRC, PO_AMT, DELY_DATE, TERM_PAY, WH_CD, 
             REG_DATE, REG_USER_ID, DEL_FLAG, RMK 
@@ -160,7 +160,7 @@
 
     <!-- 헤더 수정 -->
     <update id="updateHeader"> 
-        UPDATE POHD 
+        UPDATE pohd 
         SET PO_SUBJECT = #{dto.poName}, 
             PO_DATE = #{dto.poDate},
             PO_AMT = #{dto.totalAmount}, 
@@ -173,7 +173,7 @@
 
     <!-- 상태 변경 -->
     <update id="updateStatus"> 
-        UPDATE POHD 
+        UPDATE pohd 
         SET PROGRESS_CD = #{status}, 
             MOD_USER_ID = #{userId}
         WHERE PO_NUM = #{poNo} 
@@ -181,7 +181,7 @@
 
     <!-- 상태 변경 + 반려 사유 저장 -->
     <update id="updateStatusWithReason"> 
-        UPDATE POHD 
+        UPDATE pohd 
         SET PROGRESS_CD = #{status}, 
             RMK = #{rejectReason}, 
             MOD_USER_ID = #{userId} 
@@ -190,7 +190,7 @@
 
     <!-- 협력사 수신확인 -->
     <update id="updateVendorConfirm"> 
-        UPDATE POHD 
+        UPDATE pohd 
         SET CHECK_FLAG = 'Y', 
             CHECK_DATE = NOW(),
             MOD_USER_ID = #{userId} 
@@ -199,14 +199,14 @@
 
     <!-- 삭제 -->
     <update id="deleteHeader"> 
-        UPDATE POHD 
+        UPDATE pohd 
         SET DEL_FLAG = 'Y' 
         WHERE PO_NUM = #{poNo} 
     </update>
 
     <!-- 발주 수정 시 기존 품목 물리적 삭제 (재등록 위해) -->
     <delete id="deleteItems"> 
-        DELETE FROM PODT 
+        DELETE FROM podt 
         WHERE PO_NUM = #{poNo} 
     </delete>
 
@@ -224,11 +224,11 @@
             u.USER_NM       AS ctrlUserName, 
             h.PR_NUM        AS prNo, 
             h.RMK           AS remark 
-        FROM RFQHD h 
-        LEFT JOIN RFQVN vn ON h.RFQ_NUM = vn.RFQ_NUM AND vn.SELECT_YN = 'Y' 
-        LEFT JOIN VNGL v ON vn.VENDOR_CD = v.VENDOR_CD 
-        LEFT JOIN BY_USER u ON h.CTRL_USER_ID = u.USER_ID 
-        LEFT JOIN POHD po ON h.RFQ_NUM = po.RFQ_NUM 
+        FROM rfqhd h 
+        LEFT JOIN rfqvn vn ON h.RFQ_NUM = vn.RFQ_NUM AND vn.SELECT_YN = 'Y' 
+        LEFT JOIN vngl v ON vn.VENDOR_CD = v.VENDOR_CD 
+        LEFT JOIN by_user u ON h.CTRL_USER_ID = u.USER_ID 
+        LEFT JOIN pohd po ON h.RFQ_NUM = po.RFQ_NUM 
         WHERE h.PROGRESS_CD = 'J' 
           AND h.DEL_FLAG = 'N' 
           AND po.PO_NUM IS NULL 
@@ -253,10 +253,10 @@
             u.USER_NM       AS ctrlUserName, 
             p.PR_NUM        AS prNo, 
             p.RMK           AS remark 
-        FROM PRHD p 
-        LEFT JOIN BY_USER u ON p.CTRL_USER_ID = u.USER_ID 
-        LEFT JOIN CODD c ON p.PROGRESS_CD = c.CODE AND c.CODE_GROUP = 'PROGRESS_CD' 
-        LEFT JOIN POHD po ON p.PR_NUM = po.PR_NUM AND po.DEL_FLAG = 'N' 
+        FROM prhd p 
+        LEFT JOIN by_user u ON p.CTRL_USER_ID = u.USER_ID 
+        LEFT JOIN codd c ON p.PROGRESS_CD = c.CODE AND c.CODE_GROUP = 'PROGRESS_CD' 
+        LEFT JOIN pohd po ON p.PR_NUM = po.PR_NUM AND po.DEL_FLAG = 'N' 
         WHERE c.CODE_NAME = '승인' 
           AND p.PC_TYPE IN ('E', 'C') 
           AND p.DEL_FLAG = 'N' 
@@ -284,7 +284,7 @@
             vd.DELY_DATE    AS deliveryDate, 
             d.WH_NM         AS storageLocation, 
             d.RMK           AS remark 
-        FROM RFQDT d 
+        FROM rfqdt d 
         LEFT JOIN RFQVNDT vd ON d.RFQ_NUM = vd.RFQ_NUM AND d.LINE_NO = vd.LINE_NO AND vd.SELECT_YN = 'Y'
         WHERE d.RFQ_NUM = #{rfqNo} 
           AND d.DEL_FLAG = 'N' 
@@ -304,7 +304,7 @@
             d.DELY_DATE     AS deliveryDate, 
             NULL            AS storageLocation, 
             d.RMK           AS remark 
-        FROM PRDT d 
+        FROM prdt d 
         WHERE d.PR_NUM = #{prNum}
           AND d.DEL_FLAG = 'N' 
     </select>

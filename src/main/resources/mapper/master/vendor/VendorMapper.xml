@@ -27,14 +27,14 @@
                 COALESCE(CH.ADDR_DT, GL.ADDR_DT) AS addressDetail,
                 COALESCE(CH.FOUNDATION_DATE, GL.FOUNDATION_DATE) AS foundationDate,
                 COALESCE(CH.RMK, GL.RMK) AS remark
-            FROM VNGL GL
+            FROM vngl GL
                      LEFT JOIN (
                 SELECT *
                 FROM (
                          SELECT
                              C.*,
                              ROW_NUMBER() OVER (PARTITION BY C.VENDOR_CD ORDER BY C.REG_DATE DESC, C.ASK_NUM DESC) rn
-                         FROM VNCH C
+                         FROM vnch C
                          WHERE C.DEL_FLAG = 'N'
                      ) T
                 WHERE T.rn = 1
@@ -71,12 +71,12 @@
                               SELECT
                                   C.*,
                                   ROW_NUMBER() OVER (PARTITION BY C.VENDOR_CD ORDER BY C.REG_DATE DESC, C.ASK_NUM DESC) rn
-                              FROM VNCH C
+                              FROM vnch C
                               WHERE C.DEL_FLAG = 'N'
                           ) T
                      WHERE T.rn = 1
                  ) CH
-                     LEFT JOIN VNGL GL
+                     LEFT JOIN vngl GL
                                ON GL.VENDOR_CD = CH.VENDOR_CD
                                    AND GL.DEL_FLAG = 'N'
             WHERE GL.VENDOR_CD IS NULL
@@ -127,7 +127,7 @@
             PROGRESS_CD AS status,
             SIGN_DATE AS signDate
         FROM
-            VNCH
+            vnch
         WHERE
             ASK_NUM = #{askNum}
         AND
@@ -155,7 +155,7 @@
             INDUSTRY_TYPE AS industry,
             RMK AS remark
         FROM
-            VNGL
+            vngl
         WHERE
             VENDOR_CD = #{vendorCode}
         AND
@@ -167,7 +167,7 @@
         SELECT
             VENDOR_CD AS vendorCode
         FROM
-            VNCH
+            vnch
         WHERE
             ASK_NUM = #{askNum}
         AND
@@ -177,7 +177,7 @@
     <!--협력사 마스터 테이블 저장-->
     <insert id="insertVendorVNGL" parameterType="com.company.erp.master.vendor.dto.VendorRegisterDto">
         INSERT INTO
-        VNGL(
+        vngl(
             VENDOR_CD,
             REG_DATE,
             REG_USER_ID,
@@ -233,7 +233,7 @@
     <!--협력사 대기 테이블 저장-->
     <insert id="insertVendorVNCH" parameterType="com.company.erp.master.vendor.dto.VendorRegisterDto">
         INSERT INTO
-        VNCH(
+        vnch(
             ASK_NUM,
             VENDOR_CD,
             REG_DATE,
@@ -289,13 +289,13 @@
         FROM
             DUAL
         WHERE NOT EXISTS
-            (SELECT 1 FROM VNCH WHERE VENDOR_CD = #{vendorCode} AND PROGRESS_CD = 'C')
+            (SELECT 1 FROM vnch WHERE VENDOR_CD = #{vendorCode} AND PROGRESS_CD = 'C')
     </insert>
 
     <!--마스터 테이블 상태 업데이트-->
     <update id="updateVNGLByVendorCode" parameterType="com.company.erp.master.vendor.dto.VendorRegisterDto">
         UPDATE
-            VNGL
+            vngl
         <set>
             MOD_DATE = #{modifiedAt},
             MOD_USER_ID = #{modifiedBy},
@@ -347,7 +347,7 @@
     <!--대기 테이블 상태 업데이트-->
     <update id="updateVNCHByAskNum" parameterType="com.company.erp.master.vendor.dto.VendorUpdateDto">
         UPDATE
-            VNCH
+            vnch
         <set>
             MOD_DATE = #{modifiedAt},
             MOD_USER_ID = #{modifiedBy},
@@ -370,7 +370,7 @@
 
     <!--대기 상태 여부 확인-->
     <select id="countPending" parameterType="String" resultType="int">
-        <!--해당 사용자(VENDOR)의 VNCH 이력 중 최신 1건이 상태('C','N')인 경우 1 반환 아니면 0-->
+        <!--해당 사용자(VENDOR)의 vnch 이력 중 최신 1건이 상태('C','N')인 경우 1 반환 아니면 0-->
         SELECT COUNT(*) FROM (
             SELECT
                 V.PROGRESS_CD AS status,
@@ -379,9 +379,9 @@
                 ORDER BY V.REG_DATE DESC, V.ASK_NUM DESC
                 ) AS rn
             FROM
-                VNCH V
+                vnch V
             INNER JOIN
-                VN_USER U
+                vn_user U
             ON
                 V.VENDOR_CD = U.VENDOR_CD
             WHERE
@@ -418,9 +418,9 @@
                     ORDER BY V.REG_DATE DESC, V.ASK_NUM DESC
                 ) AS rn
             FROM
-                VNCH V
+                vnch V
             INNER JOIN
-                VN_USER U
+                vn_user U
             ON
                 V.VENDOR_CD = U.VENDOR_CD
             WHERE
@@ -453,9 +453,9 @@
             RMK AS remark,
             V.EMAIL AS email
         FROM
-            VNGL V
+            vngl V
         INNER JOIN
-            VN_USER U
+            vn_user U
         ON
             V.VENDOR_CD = U.VENDOR_CD
         WHERE
@@ -470,10 +470,10 @@
     <select id="existsByBusinessNo" parameterType="String" resultType="boolean">
         <!--둘 중 하나라도 0보다 크면 TRUE 반환-->
         SELECT(
-            SELECT COUNT(*) FROM VNGL WHERE IRS_NO = #{businessNo} AND DEL_FLAG = 'N'
+            SELECT COUNT(*) FROM vngl WHERE IRS_NO = #{businessNo} AND DEL_FLAG = 'N'
         <!--마스터 테이블 존재 여부 확인-->
         ) + (
-            SELECT COUNT(*) FROM VNCH WHERE IRS_NO = #{businessNo} AND PROGRESS_CD != 'R'
+            SELECT COUNT(*) FROM vnch WHERE IRS_NO = #{businessNo} AND PROGRESS_CD != 'R'
         <!--대기 테이블 존재 여부 확인 (반려 제외) -->
         ) > 0
     </select>
@@ -498,7 +498,7 @@
             RMK AS remark,
             EMAIL AS email
         FROM
-            VNCH
+            vnch
         WHERE
             VENDOR_CD = #{vendorCode}
         AND
@@ -513,7 +513,7 @@
         SELECT
             FILE_NUM
         FROM
-            ATT_FILE
+            att_file
         WHERE
             VENDOR_CD = #{vendorCode}
         AND
@@ -525,7 +525,7 @@
     <!--협력사 정보 업데이트-->
     <update id="updateVendorVNGL" parameterType="com.company.erp.master.vendor.dto.VendorUpdateDto">
         UPDATE
-            VNGL
+            vngl
         <set>
             <if test="vendorName != null and vendorName != ''">
                 VENDOR_NM = #{vendorName},

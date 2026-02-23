@@ -52,9 +52,9 @@
                         FROM dept_role m
                         WHERE m.COM_TYPE = 'B'
                           AND m.DEPT_CD = u.DEPT_CD
-                          AND m.ROLE = 'BUYER'
+                          AND m.ROLE = 'buyer'
                           AND m.USE_FLAG = 'Y'
-                    ) THEN 'BUYER'
+                    ) THEN 'buyer'
                 ELSE 'USER'
                 END                AS role
         FROM by_user u

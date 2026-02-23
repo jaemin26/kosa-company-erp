@@ -25,25 +25,25 @@
                v.SELECT_YN    AS selectYn,
                v.SELECT_RMK   AS rmk,
                h.SELECT_DATE  AS selectDate
-          FROM RFQHD h
-          JOIN RFQVN v
+          FROM rfqhd h
+          JOIN rfqvn v
             ON h.RFQ_NUM = v.RFQ_NUM
            AND v.DEL_FLAG = 'N'
-          JOIN VNGL vn
+          JOIN vngl vn
             ON v.VENDOR_CD = vn.VENDOR_CD
-     LEFT JOIN CODD c1
+     LEFT JOIN codd c1
             ON c1.CODE_GROUP = 'PROGRESS_CD'
            AND h.PROGRESS_CD = c1.CODE
            AND c1.USE_YN = 'Y'
-     LEFT JOIN CODD c2
+     LEFT JOIN codd c2
             ON c2.CODE_GROUP = 'REQ_TYPE'
            AND h.RFQ_TYPE = c2.CODE
            AND c2.USE_YN = 'Y'
-     LEFT JOIN CODD c3
+     LEFT JOIN codd c3
             ON c3.CODE_GROUP = 'PROGRESS_CD'
            AND v.PROGRESS_CD = c3.CODE
            AND c3.USE_YN = 'Y'
-     LEFT JOIN BY_USER u
+     LEFT JOIN by_user u
             ON h.CTRL_USER_ID = u.USER_ID
          WHERE h.DEL_FLAG = 'N'
            AND h.PROGRESS_CD IN ('M', 'G', 'J')
@@ -77,7 +77,7 @@
     </select>
 
     <update id="updateRfqStatusToOpened">
-        UPDATE RFQHD
+        UPDATE rfqhd
            SET PROGRESS_CD = 'G',
                MOD_DATE    = NOW(),
                MOD_USER_ID = #{loginUserId}
@@ -88,7 +88,7 @@
     </update>
 
     <update id="updateRfqStatusToSelected">
-        UPDATE RFQHD
+        UPDATE rfqhd
            SET PROGRESS_CD = 'J',
                MOD_DATE    = NOW(),
                MOD_USER_ID = #{loginUserId},
@@ -100,14 +100,14 @@
     </update>
 
     <update id="resetRfqVendorsSelection">
-        UPDATE RFQVN
+        UPDATE rfqvn
            SET SELECT_YN = 'N'
          WHERE RFQ_NUM = #{rfqNum}
            AND DEL_FLAG = 'N'
     </update>
 
     <update id="updateRfqVendorSelection">
-        UPDATE RFQVN
+        UPDATE rfqvn
            SET SELECT_YN   = 'Y',
                PROGRESS_CD = 'J',
                SELECT_RMK  = #{selectRmk},

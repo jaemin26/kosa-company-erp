@@ -20,16 +20,16 @@
                u.USER_NM        AS ctrlUserNm,
                h.PR_NUM         AS prNum,
                h.PC_TYPE        AS pcType
-          FROM RFQHD h
-     LEFT JOIN CODD c1
+          FROM rfqhd h
+     LEFT JOIN codd c1
             ON c1.CODE_GROUP = 'PROGRESS_CD'
            AND h.PROGRESS_CD = c1.CODE
            AND c1.USE_YN = 'Y'
-     LEFT JOIN CODD c2
+     LEFT JOIN codd c2
             ON c2.CODE_GROUP = 'REQ_TYPE'
            AND h.RFQ_TYPE = c2.CODE
            AND c2.USE_YN = 'Y'
-     LEFT JOIN BY_USER u
+     LEFT JOIN by_user u
             ON h.CTRL_USER_ID = u.USER_ID
          WHERE h.RFQ_NUM = #{rfqNum}
            AND h.DEL_FLAG = 'N'
@@ -50,7 +50,7 @@
                DELY_DATE    AS delyDate,
                WH_NM        AS whNm,
                RMK          AS rmk
-          FROM RFQDT
+          FROM rfqdt
          WHERE RFQ_NUM = #{rfqNum}
            AND DEL_FLAG = 'N'
          ORDER BY LINE_NO
@@ -67,8 +67,8 @@
                v.SUBMIT_DATE  AS submitDate,
                v.TOTAL_AMT    AS totalAmt,
                v.SELECT_YN    AS selectYn
-          FROM RFQVN v
-    INNER JOIN VNGL vn
+          FROM rfqvn v
+    INNER JOIN vngl vn
             ON v.VENDOR_CD = vn.VENDOR_CD
            AND vn.DEL_FLAG = 'N'
            AND vn.USE_FLAG = 'Y'
@@ -95,8 +95,8 @@
                NULL        AS rmk,
                #{ctrlUserId} AS ctrlUserId,
                (SELECT b.USER_NM FROM by_user b WHERE b.USER_ID = #{ctrlUserId}) AS ctrlUserNm
-          FROM PRHD h
-          JOIN CODD c
+          FROM prhd h
+          JOIN codd c
             ON c.CODE = h.PC_TYPE
            AND c.CODE_GROUP = 'PC_TYPE'
          WHERE h.PR_NUM = #{prNum}
@@ -119,7 +119,7 @@
                pd.DELY_DATE AS delyDate,
                NULL         AS whNm,
                pd.RMK       AS rmk
-          FROM PRDT pd
+          FROM prdt pd
          WHERE pd.PR_NUM = #{prNum}
            AND pd.DEL_FLAG = 'N'
          ORDER BY pd.REG_DATE
@@ -129,7 +129,7 @@
         SELECT
                CODE      AS code,
                CODE_NAME AS codeName
-          FROM CODD
+          FROM codd
          WHERE CODE_GROUP = #{codeGroup}
            AND USE_YN = 'Y'
     </select>
@@ -137,14 +137,14 @@
     <select id="selectPrItemLineNos" resultType="int">
         SELECT
                LINE_NO
-          FROM PRDT
+          FROM prdt
          WHERE PR_NUM = #{prNum}
            AND DEL_FLAG = 'N'
     </select>
 
     <!-- 5. 생성: Header 신규 생성 -->
     <insert id="insertRfqHeader">
-        INSERT INTO RFQHD (
+        INSERT INTO rfqhd (
             RFQ_NUM, RFQ_SUBJECT, RFQ_DATE, PR_NUM,
             PROGRESS_CD, RFQ_TYPE, REQ_CLOSE_DATE, RMK, CTRL_USER_ID, PC_TYPE, DEL_FLAG, REG_DATE,
             REG_USER_ID
@@ -157,7 +157,7 @@
 
     <!-- 6. 저장: Header 수정 -->
     <update id="updateRfqHeader">
-        UPDATE RFQHD
+        UPDATE rfqhd
            SET RFQ_SUBJECT    = #{req.rfqSubject},
                RFQ_TYPE       = #{req.rfqType},
                REQ_CLOSE_DATE = #{req.reqCloseDate},
@@ -172,18 +172,18 @@
 
     <delete id="deleteRfqItems">
         DELETE
-          FROM RFQDT
+          FROM rfqdt
          WHERE RFQ_NUM = #{rfqNum}
     </delete>
 
     <delete id="deleteRfqVendors">
         DELETE
-          FROM RFQVN
+          FROM rfqvn
          WHERE RFQ_NUM = #{rfqNum}
     </delete>
 
     <insert id="insertRfqVendors">
-        INSERT INTO RFQVN (
+        INSERT INTO rfqvn (
             RFQ_NUM, VENDOR_CD, PROGRESS_CD, DEL_FLAG,
             REG_DATE, REG_USER_ID
         ) VALUES
@@ -193,7 +193,7 @@
     </insert>
 
     <insert id="insertRfqItems">
-        INSERT INTO RFQDT (
+        INSERT INTO rfqdt (
             RFQ_NUM, LINE_NO, ITEM_CD, ITEM_DESC, ITEM_SPEC,
             UNIT_CD, RFQ_QT, EST_UNIT_PRC, EST_AMT, DELY_DATE, WH_NM, RMK, DEL_FLAG, REG_DATE,
             REG_USER_ID
@@ -209,7 +209,7 @@
 
     <!-- 8. 전송: Header 상태 전환 (T -> RFQS) -->
     <update id="updateRfqStatusToSend">
-        UPDATE RFQHD
+        UPDATE rfqhd
            SET PROGRESS_CD = 'RFQS',
                RFQ_DATE    = NOW(),
                MOD_DATE    = NOW(),
@@ -222,7 +222,7 @@
 
     <!-- 9. 전송: Vendor 상태 전환 (T -> RFQS) -->
     <update id="updateRfqVendorsStatusToSend">
-        UPDATE RFQVN
+        UPDATE rfqvn
            SET PROGRESS_CD = 'RFQS',
                SEND_DATE   = NOW(),
                MOD_DATE    = NOW(),
@@ -234,7 +234,7 @@
 
     <!-- 10. 선정: Header 상태 전환 -->
     <update id="updateRfqStatusToSelected">
-        UPDATE RFQHD
+        UPDATE rfqhd
            SET PROGRESS_CD = 'J',
                MOD_DATE    = NOW(),
                MOD_USER_ID = #{loginUserId}
@@ -246,7 +246,7 @@
 
     <!-- 11. 선정: Vendors 선정 상태 초기화 -->
     <update id="resetRfqVendorsSelection">
-        UPDATE RFQVN
+        UPDATE rfqvn
            SET SELECT_YN = 'N'
          WHERE RFQ_NUM = #{rfqNum}
            AND DEL_FLAG = 'N'
@@ -254,7 +254,7 @@
 
     <!-- 12. 선정: 대상 Vendor 선정 -->
     <update id="updateRfqVendorSelection">
-        UPDATE RFQVN
+        UPDATE rfqvn
            SET SELECT_YN   = 'Y',
                MOD_DATE    = NOW(),
                MOD_USER_ID = #{loginUserId}
@@ -266,14 +266,14 @@
     <select id="selectRfqVendorCodes" resultType="string">
         SELECT
                VENDOR_CD
-          FROM RFQVN
+          FROM rfqvn
          WHERE RFQ_NUM = #{rfqNum}
            AND DEL_FLAG = 'N'
     </select>
 
     <!-- 13. 삭제: RFQ 논리 삭제 -->
     <update id="deleteRfq">
-        UPDATE RFQHD
+        UPDATE rfqhd
            SET DEL_FLAG    = 'Y',
                MOD_DATE    = NOW(),
                MOD_USER_ID = #{loginUserId}

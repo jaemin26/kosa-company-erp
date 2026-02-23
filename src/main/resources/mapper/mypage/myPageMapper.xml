@@ -20,16 +20,16 @@
             COALESCE(U.EMAIL, '') AS email,
             '' AS mobile,
             COALESCE(U.FAX_NUM, '') AS fax
-        FROM BY_USER U
-        LEFT JOIN DEPT D ON D.dept_cd = U.dept_cd AND D.DEL_FLAG = 'N'
-        LEFT JOIN BUYER B ON B.BUYER_CD = D.BUYER_CD
+        FROM by_user U
+        LEFT JOIN dept D ON D.dept_cd = U.dept_cd AND D.DEL_FLAG = 'N'
+        LEFT JOIN buyer B ON B.BUYER_CD = D.BUYER_CD
         WHERE U.USER_ID = #{userId}
         AND U.DEL_FLAG = 'N'
     </select>
 
     <!-- 내 정보 업데이트 -->
     <update id="updateMyInfo">
-        UPDATE BY_USER
+        UPDATE by_user
         <set>
             <if test="userNameEn != null and userNameEn != ''">
                 USER_NM_ENG = #{userNameEn},
@@ -67,8 +67,8 @@
             COALESCE(V.TEL_NO, '') AS phone,
             COALESCE(V.ZIP_CD, '') AS zipCode,
             COALESCE(V.REG_TYPE, '') AS businessType
-        FROM VN_USER U
-        LEFT JOIN VNGL V ON V.VENDOR_CD = U.VENDOR_CD AND V.DEL_FLAG = 'N'
+        FROM vn_user U
+        LEFT JOIN vngl V ON V.VENDOR_CD = U.VENDOR_CD AND V.DEL_FLAG = 'N'
         WHERE U.USER_ID = #{userId}
         AND U.DEL_FLAG = 'N'
         LIMIT 1
@@ -76,7 +76,7 @@
 
     <!-- 협력사 사용자 정보 업데이트 (비밀번호) -->
     <update id="updateVendorUserInfo">
-        UPDATE VN_USER
+        UPDATE vn_user
         SET PASSWORD = #{password},
             MOD_DATE = NOW(),
             MOD_USER_ID = #{userId}

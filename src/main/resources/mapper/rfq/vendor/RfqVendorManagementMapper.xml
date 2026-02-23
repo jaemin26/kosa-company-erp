@@ -169,7 +169,7 @@
          ORDER BY LINE_NO
     </select>
 
-    <!-- RFQVN 상태 조회 -->
+    <!-- rfqvn 상태 조회 -->
     <select id="selectRfqVnStatus" resultType="map">
         SELECT
                PROGRESS_CD AS progressCd,
@@ -180,7 +180,7 @@
            AND DEL_FLAG = 'N'
     </select>
 
-    <!-- RFQVN 상태 업데이트 -->
+    <!-- rfqvn 상태 업데이트 -->
     <update id="updateRfqVnStatus">
         UPDATE rfqvn
            SET PROGRESS_CD = #{progressCd},
@@ -191,7 +191,7 @@
            AND DEL_FLAG = 'N'
     </update>
 
-    <!-- RFQHD 상태 조회 -->
+    <!-- rfqhd 상태 조회 -->
     <select id="selectRfqHdStatus" resultType="string">
         SELECT
                PROGRESS_CD

@@ -44,21 +44,21 @@
                v.SEND_DATE   AS sendDate,
                v.SUBMIT_DATE AS submitDate,
                v.SELECT_YN   AS selectYn
-          FROM RFQHD h
-     LEFT JOIN RFQVN v
+          FROM rfqhd h
+     LEFT JOIN rfqvn v
             ON h.RFQ_NUM = v.RFQ_NUM
            AND v.DEL_FLAG = 'N'
-     LEFT JOIN VNGL vn
+     LEFT JOIN vngl vn
             ON v.VENDOR_CD = vn.VENDOR_CD
-     LEFT JOIN BY_USER u
+     LEFT JOIN by_user u
             ON h.CTRL_USER_ID = u.USER_ID
-     LEFT JOIN CODD c1
+     LEFT JOIN codd c1
             ON c1.CODE_GROUP = 'REQ_TYPE'
            AND h.RFQ_TYPE = c1.CODE
-     LEFT JOIN CODD c2
+     LEFT JOIN codd c2
             ON c2.CODE_GROUP = 'PROGRESS_CD'
            AND h.PROGRESS_CD = c2.CODE
-     LEFT JOIN CODD c3
+     LEFT JOIN codd c3
             ON c3.CODE_GROUP = 'PROGRESS_CD'
            AND v.PROGRESS_CD = c3.CODE
          WHERE h.DEL_FLAG = 'N'
@@ -87,7 +87,7 @@
     </select>
 
     <update id="updateRfqStatus">
-        UPDATE RFQHD
+        UPDATE rfqhd
            SET PROGRESS_CD = #{statusCd},
                MOD_DATE    = NOW(),
                MOD_USER_ID = #{loginUserId},
@@ -103,7 +103,7 @@
     </update>
 
     <update id="updateAllVendorStatus">
-        UPDATE RFQVN
+        UPDATE rfqvn
            SET PROGRESS_CD = #{statusCd},
                <if test='statusCd == "RFQS"'>
                SEND_DATE = NOW(),
@@ -117,7 +117,7 @@
     <select id="selectRfqVendorCodes" resultType="string">
         SELECT
                VENDOR_CD
-          FROM RFQVN
+          FROM rfqvn
          WHERE RFQ_NUM = #{rfqNum}
            AND DEL_FLAG = 'N'
     </select>

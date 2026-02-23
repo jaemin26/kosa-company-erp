@@ -6,14 +6,14 @@
 
     <!-- 사용자명 조회 -->
     <select id="selectUserName" resultType="String">
-        SELECT USER_NM FROM BY_USER
+        SELECT USER_NM FROM by_user
         WHERE USER_ID = #{userId}
         AND DEL_FLAG = 'N'
     </select>
 
     <!-- 공지사항 등록 -->
     <insert id="insertNotice" parameterType="com.company.erp.notice.dto.NoticeDTO">
-        INSERT INTO NOTC
+        INSERT INTO notc
         (NOTICE_NUM, SUBJECT, CONTENT, REG_DATE, REG_USER_ID, DEL_FLAG, START_DATE, END_DATE, VIEW_CNT, BUYER_CD, VENDOR_CD)
         VALUES
         (#{noticeNum}, #{subject}, #{content}, NOW(), #{regUserId}, 'N', #{startDate}, #{endDate}, 0, #{buyerCd}, #{vendorCd})
@@ -30,8 +30,8 @@
             DATE_FORMAT(N.START_DATE, '%Y-%m-%d') as startDate,
             DATE_FORMAT(N.END_DATE, '%Y-%m-%d') as endDate,
             COALESCE(N.VIEW_CNT, 0) as viewCnt
-        FROM NOTC N
-        LEFT JOIN BY_USER U ON N.REG_USER_ID = U.USER_ID
+        FROM notc N
+        LEFT JOIN by_user U ON N.REG_USER_ID = U.USER_ID
         WHERE N.DEL_FLAG = 'N'
         <if test="startDate != null and startDate != ''">
             AND DATE(N.START_DATE) >= DATE(#{startDate})
@@ -66,15 +66,15 @@
             N.VIEW_CNT as viewCnt,
             DATE_FORMAT(N.MOD_DATE, '%Y-%m-%d') as modDate,
             N.MOD_USER_ID as modUserId
-        FROM NOTC N
-        LEFT JOIN BY_USER U ON N.REG_USER_ID = U.USER_ID
+        FROM notc N
+        LEFT JOIN by_user U ON N.REG_USER_ID = U.USER_ID
         WHERE N.NOTICE_NUM = #{noticeNum}
         AND N.DEL_FLAG = 'N'
     </select>
 
     <!-- 공지사항 수정  -->
     <update id="updateNotice" parameterType="com.company.erp.notice.dto.NoticeDTO">
-        UPDATE NOTC
+        UPDATE notc
         <set>
             <if test="subject != null and subject != ''">
                 SUBJECT = #{subject},
@@ -91,7 +91,7 @@
 
     <!-- 공지사항 삭제  -->
     <update id="deleteNotice">
-        UPDATE NOTC
+        UPDATE notc
         SET DEL_FLAG = 'Y',
             MOD_DATE = NOW(),
             MOD_USER_ID = #{modUserId}
@@ -101,7 +101,7 @@
 
     <!-- 공지사항 조회수 증가 -->
     <update id="incrementViewCnt">
-        UPDATE NOTC
+        UPDATE notc
         SET VIEW_CNT = COALESCE(VIEW_CNT, 0) + 1
         WHERE NOTICE_NUM = #{noticeNum}
         AND DEL_FLAG = 'N'

@@ -33,7 +33,7 @@
 
     <!-- 파일 메타 저장 -->
     <insert id="insert">
-        INSERT INTO ATT_FILE (
+        INSERT INTO att_file (
             FILE_NUM,
             REF_TYPE,
             REF_NO,
@@ -65,14 +65,14 @@
     <!-- 파일 단건 조회 -->
     <select id="findByFileNum" resultMap="AttFileMap">
         SELECT *
-        FROM ATT_FILE
+        FROM att_file
         WHERE FILE_NUM = #{fileNum}
     </select>
 
     <!-- 문서별 첨부파일 목록 -->
     <select id="findByRef" resultMap="AttFileMap">
         SELECT *
-        FROM ATT_FILE
+        FROM att_file
         WHERE REF_TYPE = #{refType}
           AND REF_NO   = #{refNo}
           AND DEL_FLAG = 'N'
@@ -81,7 +81,7 @@
 
     <!-- 논리 삭제 -->
     <update id="markDeleted">
-        UPDATE ATT_FILE
+        UPDATE att_file
         SET
             DEL_FLAG = 'Y',
             MOD_DATE = NOW(),

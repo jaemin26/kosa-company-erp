@@ -20,18 +20,18 @@
                c2.CODE_NAME      AS pcTypeNm,
                COUNT(pd.ITEM_CD) AS itemCount,
                ph.PR_AMT         AS totalAmount
-          FROM PRHD ph
-     LEFT JOIN PRDT pd
+          FROM prhd ph
+     LEFT JOIN prdt pd
             ON pd.PR_NUM = ph.PR_NUM
            AND pd.DEL_FLAG = 'N'
-     LEFT JOIN BY_USER u
+     LEFT JOIN by_user u
             ON u.USER_ID = ph.REG_USER_ID
-     LEFT JOIN DEPT d
+     LEFT JOIN dept d
             ON d.DEPT_CD = ph.DEPT_CD
-     LEFT JOIN CODD c1
+     LEFT JOIN codd c1
             ON c1.CODE_GROUP = 'PROGRESS_CD'
            AND c1.CODE = ph.PROGRESS_CD
-     LEFT JOIN CODD c2
+     LEFT JOIN codd c2
             ON c2.CODE_GROUP = 'PC_TYPE'
            AND c2.CODE = ph.PC_TYPE
          WHERE ph.DEL_FLAG = 'N'
@@ -40,7 +40,7 @@
            AND NOT EXISTS (
                SELECT
                       1
-                 FROM RFQHD r 
+                 FROM rfqhd r 
                 WHERE r.PR_NUM = ph.PR_NUM 
                   AND r.DEL_FLAG = 'N'
            )
@@ -78,7 +78,7 @@
                pd.PR_AMT    AS prAmt,
                pd.DELY_DATE AS delyDate,
                pd.RMK       AS rmk
-          FROM PRDT pd
+          FROM prdt pd
          WHERE
         <choose>
             <when test="prNums != null and !prNums.isEmpty()">

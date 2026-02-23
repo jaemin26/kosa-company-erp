@@ -5,7 +5,7 @@
 <mapper namespace="com.company.erp.common.docNum.mapper.DocNumMapper">
 
     <insert id="increaseSeq">
-        INSERT INTO DCNB (doc_type, doc_date, seq_no)
+        INSERT INTO dcnb (doc_type, doc_date, seq_no)
         VALUES (#{docType}, #{docDate}, 1)
             ON DUPLICATE KEY UPDATE seq_no = LAST_INSERT_ID(seq_no + 1)
     </insert>

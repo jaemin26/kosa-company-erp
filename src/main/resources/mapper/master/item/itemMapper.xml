@@ -13,13 +13,13 @@
             GL.MAKER_NM AS manufacturerName,
             GL.REG_DATE AS createdAt
         FROM
-            MTGL GL
+            mtgl GL
         LEFT JOIN
-            MTGC GC
+            mtgc GC
         ON
             GL.ITEM_CD = GC.ITEM_CD
         LEFT JOIN
-            MTCA CA
+            mtca CA
         ON
             GC.ITEM_CLS = CA.ITEM_CLS
         <where>
@@ -51,7 +51,7 @@
         select
             COUNT(*)
         from
-            MTGL
+            mtgl
         where
             ITEM_NM = #{itemName}
         AND
@@ -65,7 +65,7 @@
         SELECT
             COUNT(*) AS item_count
         FROM
-            MTGL
+            mtgl
         <where>
             DEL_FLAG = 'N'
             <if test="itemCode != null and itemCode != ''">
@@ -110,25 +110,25 @@
             GL.REG_USER_ID AS createdBy,
             GL.VERSION AS version
         FROM
-            MTGL GL
+            mtgl GL
         LEFT JOIN <!--카테고리가 삭제되더라도 표시되기 위해서-->
-            MTGC GC
+            mtgc GC
         ON
             GL.ITEM_CD = GC.ITEM_CD
         LEFT JOIN
-            MTCA CA_TYPE
+            mtca CA_TYPE
         ON
             GC.ITEM_CLS = CA_TYPE.ITEM_CLS
         LEFT JOIN
-            MTCA CA_L
+            mtca CA_L
         ON
             GC.ITEM_CLS1 = CA_L.ITEM_CLS
         LEFT JOIN
-            MTCA CA_M
+            mtca CA_M
         ON
             GC.ITEM_CLS2 = CA_M.ITEM_CLS
         LEFT JOIN
-            MTCA CA_S
+            mtca CA_S
         ON
             GC.ITEM_CLS3 = CA_S.ITEM_CLS
         WHERE
@@ -140,7 +140,7 @@
     <!--품목 마스터 테이블 저장-->
     <insert id="insertItemMTGL" parameterType="com.company.erp.master.item.dto.ItemDetailDto">
         INSERT INTO
-            MTGL(
+            mtgl(
                 ITEM_CD,
                 REG_DATE,
                 REG_USER_ID,
@@ -181,7 +181,7 @@
     <!--품목 분류 테이블 저장-->
     <insert id="insertItemMTGC" parameterType="com.company.erp.master.item.dto.ItemDetailDto">
         INSERT INTO
-            MTGC(
+            mtgc(
                 ITEM_CD,
                 REG_DATE,
                 REG_USER_ID,
@@ -212,7 +212,7 @@
     <!--품목 수정-->
     <update id="updateItem" parameterType="com.company.erp.master.item.dto.ItemDetailDto">
         UPDATE
-        MTGL
+        mtgl
         <set>
             MOD_DATE = #{modifiedAt},
             MOD_USER_ID = #{modifiedBy},

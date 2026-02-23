@@ -18,18 +18,18 @@
                u.USER_NM        AS ctrlUserNm,
                h.REG_DATE       AS regDate,
                h.SELECT_DATE    AS selectDate
-          FROM RFQHD h
-    INNER JOIN RFQVN v
+          FROM rfqhd h
+    INNER JOIN rfqvn v
             ON h.RFQ_NUM = v.RFQ_NUM 
            AND v.SELECT_YN = 'Y' 
            AND v.DEL_FLAG = 'N'
-    INNER JOIN VNGL vn
+    INNER JOIN vngl vn
             ON v.VENDOR_CD = vn.VENDOR_CD
-     LEFT JOIN CODD c1
+     LEFT JOIN codd c1
             ON c1.CODE_GROUP = 'REQ_TYPE'
            AND h.RFQ_TYPE = c1.CODE
            AND c1.USE_YN = 'Y'
-     LEFT JOIN BY_USER u
+     LEFT JOIN by_user u
             ON h.CTRL_USER_ID = u.USER_ID
          WHERE h.DEL_FLAG = 'N'
            AND h.PROGRESS_CD = 'J'
@@ -64,25 +64,25 @@
                u.USER_NM        AS ctrlUserNm,
                h.REG_DATE       AS regDate,
                h.SELECT_DATE    AS selectDate
-          FROM RFQHD h
-    INNER JOIN RFQVN v
+          FROM rfqhd h
+    INNER JOIN rfqvn v
             ON h.RFQ_NUM = v.RFQ_NUM 
            AND v.SELECT_YN = 'Y' 
            AND v.DEL_FLAG = 'N'
-    INNER JOIN VNGL vn
+    INNER JOIN vngl vn
             ON v.VENDOR_CD = vn.VENDOR_CD
-     LEFT JOIN CODD c1
+     LEFT JOIN codd c1
             ON c1.CODE_GROUP = 'REQ_TYPE'
            AND h.RFQ_TYPE = c1.CODE
            AND c1.USE_YN = 'Y'
-     LEFT JOIN BY_USER u
+     LEFT JOIN by_user u
             ON h.CTRL_USER_ID = u.USER_ID
          WHERE h.RFQ_NUM = #{rfqNum}
            AND h.PROGRESS_CD = 'J'
            AND h.DEL_FLAG = 'N'
     </select>
 
-    <!-- 선정된 업체의 견적 상세 품목 조회 (RFQDT 기준) -->
+    <!-- 선정된 업체의 견적 상세 품목 조회 (rfqdt 기준) -->
     <select id="selectRfqResultItems" resultType="com.company.erp.rfq.buyer.result.dto.response.RfqResultItem">
         SELECT
                rd.ITEM_CD       AS itemCd,
@@ -94,11 +94,11 @@
                rvd.QUOTE_AMT    AS amt,
                rvd.DELY_DATE    AS dlvyDate,
                rvd.RMK          AS rmk
-          FROM RFQHD rh
-    INNER JOIN RFQDT rd
+          FROM rfqhd rh
+    INNER JOIN rfqdt rd
             ON rh.RFQ_NUM = rd.RFQ_NUM
            AND rd.DEL_FLAG = 'N'
-    INNER JOIN RFQVN rv
+    INNER JOIN rfqvn rv
             ON rh.RFQ_NUM = rv.RFQ_NUM
            AND rv.SELECT_YN = 'Y'
            AND rv.DEL_FLAG = 'N'

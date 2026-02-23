@@ -5,18 +5,18 @@
 
 <mapper namespace="com.company.erp.rfq.buyer.selection.mapper.RfqCompareMapper">
 
-    <!-- 헤더 (RFQHD) -->
+    <!-- 헤더 (rfqhd) -->
     <select id="selectHeader" parameterType="string"
             resultType="com.company.erp.rfq.buyer.selection.dto.response.RfqCompareResponse">
         SELECT
                RFQ_NUM     AS rfqNo,
                RFQ_SUBJECT AS rfqName
-          FROM RFQHD
+          FROM rfqhd
          WHERE RFQ_NUM = #{rfqNo}
            AND DEL_FLAG = 'N'
     </select>
 
-    <!-- 품목 (RFQDT) -->
+    <!-- 품목 (rfqdt) -->
     <select id="selectItems" parameterType="string"
             resultType="com.company.erp.rfq.buyer.selection.dto.response.RfqCompareResponse$Item">
         SELECT
@@ -26,21 +26,21 @@
                ITEM_SPEC AS itemSpec,
                UNIT_CD   AS unitCd,
                RFQ_QT    AS qty
-          FROM RFQDT
+          FROM rfqdt
          WHERE RFQ_NUM = #{rfqNo}
            AND DEL_FLAG = 'N'
          ORDER BY LINE_NO
     </select>
 
-    <!-- 협력업체 (RFQVN + VNGL) -->
+    <!-- 협력업체 (rfqvn + vngl) -->
     <select id="selectVendors" parameterType="string"
             resultType="com.company.erp.rfq.buyer.selection.dto.response.RfqCompareResponse$Vendor">
         SELECT
                rq.VENDOR_CD AS vendorCd,
                vn.VENDOR_NM AS vendorNm,
                rq.SELECT_YN AS selectYn
-          FROM RFQVN rq
-          JOIN VNGL vn
+          FROM rfqvn rq
+          JOIN vngl vn
             ON rq.VENDOR_CD = vn.VENDOR_CD
            AND vn.DEL_FLAG = 'N'
          WHERE rq.RFQ_NUM = #{rfqNo}

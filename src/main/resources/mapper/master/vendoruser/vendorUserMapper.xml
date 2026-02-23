@@ -9,8 +9,8 @@
                 U.askUserNum,
                 U.vendorCode,
                 COALESCE(
-                    (SELECT VENDOR_NM FROM VNCH WHERE VENDOR_CD = U.vendorCode LIMIT 1),
-                    (SELECT VENDOR_NM FROM VNGL WHERE VENDOR_CD = U.vendorCode LIMIT 1)
+                    (SELECT VENDOR_NM FROM vnch WHERE VENDOR_CD = U.vendorCode LIMIT 1),
+                    (SELECT VENDOR_NM FROM vngl WHERE VENDOR_CD = U.vendorCode LIMIT 1)
                 ) AS vendorName,
                 U.userId,
                 U.userName,
@@ -36,7 +36,7 @@
                     DEL_FLAG AS delFlag,
                     REQ_TYPE AS reqType
                 FROM
-                    VNCH_US
+                    vnch_us
                 WHERE
                     PROGRESS_CD IN ('N', 'C', 'R')
                     AND DEL_FLAG = 'N'
@@ -56,11 +56,11 @@
                     DEL_FLAG AS delFlag,
                     NULL AS reqType
                 FROM
-                    VN_USER
+                    vn_user
                 WHERE
                     USER_ID NOT IN (
                         <!--중복 제거-->
-                        SELECT USER_ID FROM VNCH_US
+                        SELECT USER_ID FROM vnch_us
                         WHERE PROGRESS_CD IN ('C', 'N', 'R')
                         AND DEL_FLAG = 'N'
                     )
@@ -120,7 +120,7 @@
                 DEL_FLAG AS delFlag,
                 REQ_TYPE AS reqType
             FROM
-                VNCH_US
+                vnch_us
             WHERE
                 VENDOR_CD = #{vendorCode}
                 AND PROGRESS_CD IN ('N', 'C', 'R')
@@ -141,13 +141,13 @@
                 DEL_FLAG AS delFlag,
                 NULL AS reqType
             FROM
-                VN_USER
+                vn_user
             WHERE
                 VENDOR_CD = #{vendorCode}
             AND
                 USER_ID NOT IN (
                     <!--중복 제거-->
-                    SELECT USER_ID FROM VNCH_US
+                    SELECT USER_ID FROM vnch_us
                     WHERE VENDOR_CD = #{vendorCode}
                     AND PROGRESS_CD IN ('C', 'N', 'R')
                     AND DEL_FLAG = 'N'
@@ -186,7 +186,7 @@
             SELECT
                 VENDOR_CD AS vendorCode
             FROM
-                VNCH_US
+                vnch_us
             WHERE
                 USER_ID = #{loginId}
                 AND DEL_FLAG = 'N'
@@ -195,7 +195,7 @@
             SELECT
                 VENDOR_CD AS vendorCode
             FROM
-                 VN_USER
+                 vn_user
             WHERE
                 USER_ID = #{loginId}
                 AND DEL_FLAG = 'N'
@@ -209,7 +209,7 @@
             ROLE AS role,
             VENDOR_CD AS vendorCode
         FROM
-            VN_USER
+            vn_user
         WHERE
             USER_ID = #{loginId}
         AND
@@ -223,7 +223,7 @@
         SELECT
             COUNT(*)
         FROM
-            VN_USER
+            vn_user
         WHERE
             USER_ID = #{userId}
         AND
@@ -235,7 +235,7 @@
         SELECT
             COUNT(*)
         FROM
-            VN_USER
+            vn_user
         WHERE
             USER_ID = #{userId}
     </select>
@@ -245,7 +245,7 @@
         SELECT
             COUNT(*)
         FROM
-            VN_USER
+            vn_user
         WHERE
             VENDOR_CD = #{vendorCode}
         AND
@@ -259,7 +259,7 @@
         SELECT
             COUNT(*)
         FROM
-            VN_USER
+            vn_user
         WHERE
             ROLE = 'VENDOR'
         AND
@@ -273,7 +273,7 @@
         SELECT
             COUNT(*)
         FROM
-            VNCH_US
+            vnch_us
         WHERE
             USER_ID = #{userId}
         AND
@@ -285,10 +285,10 @@
     <!--진행중인 프로세스 조회-->
     <select id="countActiveProcess" parameterType="String" resultType="int">
         SELECT
-        (SELECT COUNT(*) FROM PRHD WHERE CTRL_USER_ID = #{userId} AND PROGRESS_CD IN ('T', 'A')) +
-        (SELECT COUNT(*) FROM RFQHD WHERE CTRL_USER_ID = #{userId} AND PROGRESS_CD IN ('T', 'RFQS', 'G', 'J')) +
-        (SELECT COUNT(*) FROM POHD WHERE CTRL_USER_ID = #{userId} AND PROGRESS_CD IN ('T', 'D', 'A', 'S', 'C')) +
-        (SELECT COUNT(*) FROM GRHD WHERE CTRL_USER_ID = #{userId} AND PROGRESS_CD IN ('GRN', 'GRP'))
+        (SELECT COUNT(*) FROM prhd WHERE CTRL_USER_ID = #{userId} AND PROGRESS_CD IN ('T', 'A')) +
+        (SELECT COUNT(*) FROM rfqhd WHERE CTRL_USER_ID = #{userId} AND PROGRESS_CD IN ('T', 'RFQS', 'G', 'J')) +
+        (SELECT COUNT(*) FROM pohd WHERE CTRL_USER_ID = #{userId} AND PROGRESS_CD IN ('T', 'D', 'A', 'S', 'C')) +
+        (SELECT COUNT(*) FROM grhd WHERE CTRL_USER_ID = #{userId} AND PROGRESS_CD IN ('GRN', 'GRP'))
     </select>
 
 
@@ -296,7 +296,7 @@
     <!--마스터 테이블 협력사 유저 정보 저장-->
     <insert id="insertUserVN_USER" parameterType="com.company.erp.master.vendoruser.dto.VendorUserRegisterDto">
         INSERT INTO
-        VN_USER(
+        vn_user(
             VENDOR_CD,
             USER_ID,
             USER_NM,
@@ -347,7 +347,7 @@
     <!--대기 테이블 협력사 유저 정보 저장-->
     <insert id="insertUserVNCH_US" parameterType="com.company.erp.master.vendoruser.dto.VendorUserRegisterDto">
         INSERT INTO
-        VNCH_US(
+        vnch_us(
             ASK_USER_NUM,
             VENDOR_CD,
             REG_DATE,
@@ -388,7 +388,7 @@
     <!--마스터 테이블 협력사 유저 정보 업데이트-->
     <update id="updateVN_USERByUserId" parameterType="com.company.erp.master.vendoruser.dto.VendorUserUpdateDto">
         UPDATE
-            VN_USER
+            vn_user
         <set>
             MOD_DATE = #{modifiedAt},
             MOD_USER_ID = #{modifiedBy},
@@ -421,7 +421,7 @@
     <!--대기 테이블 협력사 유저 정보 업데이트-->
     <update id="updateVNCH_USByAskUserNum" parameterType="com.company.erp.master.vendoruser.dto.VendorUserUpdateDto">
         UPDATE
-            VNCH_US
+            vnch_us
         <set>
             MOD_DATE = #{modifiedAt},
             MOD_USER_ID = #{modifiedBy},
@@ -458,14 +458,14 @@
     <select id="existsUserId" parameterType="String" resultType="boolean">
         SELECT EXISTS(
             <!--마스터 테이블 존재 여부 확인-->
-            SELECT 1 FROM VN_USER WHERE USER_ID = #{userId} AND DEL_FLAG = 'N'
+            SELECT 1 FROM vn_user WHERE USER_ID = #{userId} AND DEL_FLAG = 'N'
             UNION ALL
             <!--대기 테이블 존재 여부 확인 -->
             SELECT 1 FROM (
                 SELECT
                     DEL_FLAG
                 FROM
-                    VNCH_US
+                    vnch_us
                 WHERE
                     USER_ID = #{userId}
                 ORDER BY
@@ -495,7 +495,7 @@
             REQ_TYPE as reqType,
             USER_ID AS userId
         FROM
-            VNCH_US
+            vnch_us
         WHERE
             ASK_USER_NUM = #{askUserNum}
         AND
@@ -511,9 +511,9 @@
             M.ROLE AS role,
             M.VENDOR_CD AS vendorCode
         FROM
-            VNCH_US CH
+            vnch_us CH
         LEFT JOIN
-            VN_USER M
+            vn_user M
         ON
             CH.USER_ID = M.USER_ID
         WHERE

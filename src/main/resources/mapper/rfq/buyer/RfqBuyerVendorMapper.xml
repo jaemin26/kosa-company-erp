@@ -12,7 +12,7 @@
                ADDR          AS address,
                INDUSTRY_TYPE AS industry,
                PROGRESS_CD   AS status
-          FROM VNGL
+          FROM vngl
          WHERE DEL_FLAG = 'N'
            AND PROGRESS_CD = 'A'  -- 승인(Approved) 상태인 업체만 조회
         <if test="vendorCode != null and vendorCode != ''">
